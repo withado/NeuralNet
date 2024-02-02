@@ -8,5 +8,10 @@ class networkLayer() :
         self.values = [0 for i in range(self.neuronCount)]
         print('done')
 
+    def propagate(self, input) :
+        for neuronIndex, value in enumerate(self.values) :
+            for neuronIndex_input, weight in enumerate(self.weights) :
+                self.values[neuronIndex] += input[neuronIndex_input] * weight
+
 
 e = networkLayer(6, 6)
