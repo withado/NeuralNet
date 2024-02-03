@@ -1,5 +1,5 @@
 from math import e
-from random import uniform
+from random import uniform, randint
 
 class networkLayer() :
     def __init__(self, neuronCount_previousLayer, neuronCount_Current) :
@@ -59,7 +59,8 @@ class neuralNetwork() :
             # otherwise, its connected to all in the previous layer
             self.layers.append(networkLayer(neuronsPerLayer[layer - 1], neurons))
 
-    def insertInput(self, input, inputLayer = 0) :
+    def insertInput(self, input, desiredOutput, inputLayer = 0) :
+        self.desiredOutput = desiredOutput
         inputLayerValues = self.layers[inputLayer].values
         if len(input) == len(inputLayerValues) :
             self.layers[0].values = input
@@ -70,28 +71,56 @@ class neuralNetwork() :
             layer.propagate(self.layers[layerIndex].values)
     
 
-    def backPropagate(self, desiredOutput) :
+    def backPropagate(self) :
         for layerIndex, layer in enumerate(reversed(self.layers)) :
+            print(layerIndex)
             if layerIndex == 0 : 
                 # if layer is the last layer, then determine initial layer error using the derivative of the cost function :)
                 layerError = [( self.desiredOutput[index] - value ) for index, value in enumerate(self.layers[-1].values)]
 
                 # defining the error for the next layer
-                layerError = layer.determine_gradients(self.layers.values[layerIndex + 1], layerError)
+                layerError = layer.determine_gradients(self.layers[layerIndex + 1].values, layerError)
+                print("asdf")
                 continue
 
             # as long as the layer is not the first layer, then
             if layer != self.layers[-1] :
 
                 # define error for the next layer
-                layerError = layer.determine_gradients(self.layers.values[layerIndex + 1, layerError])
-            
+                print (f"{self.layers[layerIndex].values} \n {self.layers[layerIndex+1].values}")
+                layerError = layer.determine_gradients(self.layers[layerIndex + 1].values, layerError)
 
 
-e = neuralNetwork([3, 4, 6])
-e.fowardPropagate()
 
 
+
+#########this part is easily changed for other problems##############
+#####################################################################
+# make those inputs
+# theres probably a better way to do this btw im just lazy
+outputs_key = ([0,0,0], [0,0,1], [0,1,0], [0,1,1], [1,0,0], [1,0,1], [1,1,0], [1,1,1])
+#outputs_key = ([0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0])
+def create_input(quiet = True, inputToValues = True) :
+    input = [0 for i in range(8)]
+    num = randint(0,7)
+    input[num] = 1
+    correct_output = outputs_key[num]
+    return input, correct_output
+#####################################################################
+
+
+
+
+
+e = neuralNetwork([8, 4, 3])
+input, correct_output = create_input()
+e.insertInput(input, correct_output)
+
+print(e.desiredOutput)
+for i in range(10) :
+    e.fowardPropagate()
+    print(e.layers[-1].values)
+    e.backPropagate()
 # Test
 '''e = networkLayer(1, 2)
 for i in range(100) :
