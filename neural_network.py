@@ -44,13 +44,23 @@ class networkLayer() :
                 self.weights[neuronIndex][connectedNeuron] += self.weightGradient[neuronIndex][connectedNeuron] * .1 # NOTE: ADD LEARNING RATE
 
 
+class neuralNetwork() :
+    def __init__(self, neuronsPerLayer) :
+        self.layers = list()
+        for layer, neurons in enumerate(neuronsPerLayer) :
+            if layer == 0 :
+                self.layers.append(networkLayer(0, neurons))
+                continue
+            self.layers.append(networkLayer(neuronsPerLayer[layer - 1], neurons))
 
 
+
+e = neuralNetwork([3, 4, 6])
 
 # Test
-e = networkLayer(1, 2)
+'''e = networkLayer(1, 2)
 for i in range(100) :
     e.propagate([1])
     print ("weights:", e.weights, "\n", "values:", e.values)
     e.determine_gradients([1], [(0 - e.values[0]), (0 - e.values[1])])
-    print(e.weightGradient)
+    print(e.weightGradient)'''
