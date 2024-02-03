@@ -43,6 +43,7 @@ class networkLayer() :
         for neuronIndex, weights in enumerate(self.weights) :
             for connectedNeuron, weight in enumerate(weights) :
                 self.weights[neuronIndex][connectedNeuron] += self.weightGradient[neuronIndex][connectedNeuron] * .1 # NOTE: ADD LEARNING RATE
+        return error_previousLayer
 
 
 class neuralNetwork() :
@@ -67,6 +68,24 @@ class neuralNetwork() :
     def fowardPropagate(self) :
         for layerIndex, layer in enumerate(self.layers[1:]):
             layer.propagate(self.layers[layerIndex].values)
+    
+
+    def backPropagate(self, desiredOutput) :
+        for layerIndex, layer in enumerate(reversed(self.layers)) :
+            if layerIndex == 0 : 
+                # if layer is the last layer, then determine initial layer error using the derivative of the cost function :)
+                layerError = [( self.desiredOutput[index] - value ) for index, value in enumerate(self.layers[-1].values)]
+
+                # defining the error for the next layer
+                layerError = layer.determine_gradients(self.layers.values[layerIndex + 1], layerError)
+                continue
+
+            # as long as the layer is not the first layer, then
+            if layer != self.layers[-1] :
+
+                # define error for the next layer
+                layerError = layer.determine_gradients(self.layers.values[layerIndex + 1, layerError])
+            
 
 
 e = neuralNetwork([3, 4, 6])
