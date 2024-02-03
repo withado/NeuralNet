@@ -58,11 +58,15 @@ class neuralNetwork() :
             # otherwise, its connected to all in the previous layer
             self.layers.append(networkLayer(neuronsPerLayer[layer - 1], neurons))
 
+    def insertInput(self, input, inputLayer = 0) :
+        inputLayerValues = self.layers[inputLayer].values
+        if len(input) == len(inputLayerValues) :
+            self.layers[0].values = input
+        else : return print("ERROR: INVALID INPUT")
+
     def fowardPropagate(self) :
         for layerIndex, layer in enumerate(self.layers[1:]):
-            print(layerIndex)
             layer.propagate(self.layers[layerIndex].values)
-        pass
 
 
 e = neuralNetwork([3, 4, 6])
