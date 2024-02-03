@@ -10,6 +10,7 @@ class networkLayer() :
         self.weights = [ [uniform(-1, 1) for i in range(self.weightCount)] for i in range(self.neuronCount)]
         #self.weights = [ [1 for i in range(self.weightCount)] for i in range(self.neuronCount)] # for testing purposes
         self.valuesBase = [0 for i in range(self.neuronCount)]
+        self.values = self.valuesBase.copy()
 
     # 1) feed an input (usually previous layer)
     def propagate(self, input) :
@@ -45,17 +46,28 @@ class networkLayer() :
 
 
 class neuralNetwork() :
+
     def __init__(self, neuronsPerLayer) :
         self.layers = list()
+
         for layer, neurons in enumerate(neuronsPerLayer) :
+            # if its the input layer, make it 0 connections
             if layer == 0 :
                 self.layers.append(networkLayer(0, neurons))
                 continue
+            # otherwise, its connected to all in the previous layer
             self.layers.append(networkLayer(neuronsPerLayer[layer - 1], neurons))
 
+    def fowardPropagate(self) :
+        for layerIndex, layer in enumerate(self.layers[1:]):
+            print(layerIndex)
+            layer.propagate(self.layers[layerIndex].values)
+        pass
 
 
 e = neuralNetwork([3, 4, 6])
+e.fowardPropagate()
+
 
 # Test
 '''e = networkLayer(1, 2)
