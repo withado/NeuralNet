@@ -38,11 +38,11 @@ class networkLayer() :
                 # dZ/dW = a_(layer - 1)
                 weightError = layerError[neuronIndex] * values_previousLayer[neuronIndex_previousLayer]
                 self.weightGradient[neuronIndex].append(weightError)
-                error_previousLayer[neuronIndex_previousLayer] -= weightError
+                error_previousLayer[neuronIndex_previousLayer] += weightError
         # enact the weightsGradient array upon the weights
         for neuronIndex, weights in enumerate(self.weights) :
             for connectedNeuron, weight in enumerate(weights) :
-                self.weights[neuronIndex][connectedNeuron] += self.weightGradient[neuronIndex][connectedNeuron] * .1 # NOTE: ADD LEARNING RATE
+                self.weights[neuronIndex][connectedNeuron] += self.weightGradient[neuronIndex][connectedNeuron] * .01 # NOTE: ADD LEARNING RATE
         return error_previousLayer
 
 
@@ -73,22 +73,19 @@ class neuralNetwork() :
 
     def backPropagate(self) :
         for layerIndex, layer in enumerate(reversed(self.layers)) :
-            print(layerIndex)
             if layerIndex == 0 : 
                 # if layer is the last layer, then determine initial layer error using the derivative of the cost function :)
                 layerError = [( self.desiredOutput[index] - value ) for index, value in enumerate(self.layers[-1].values)]
 
                 # defining the error for the next layer
-                layerError = layer.determine_gradients(self.layers[layerIndex + 1].values, layerError)
-                print("asdf")
+                layerError = layer.determine_gradients(self.layers[self.layers.index(layer) - 1].values, layerError)
                 continue
 
             # as long as the layer is not the first layer, then
             if layer != self.layers[-1] :
 
                 # define error for the next layer
-                print (f"{self.layers[layerIndex].values} \n {self.layers[layerIndex+1].values}")
-                layerError = layer.determine_gradients(self.layers[layerIndex + 1].values, layerError)
+                layerError = layer.determine_gradients(self.layers[self.layers.index(layer) - 1].values, layerError)
 
 
 
@@ -113,14 +110,16 @@ def create_input(quiet = True, inputToValues = True) :
 
 
 e = neuralNetwork([8, 4, 3])
-input, correct_output = create_input()
-e.insertInput(input, correct_output)
 
-print(e.desiredOutput)
-for i in range(10) :
+
+for i in range(1000) :
+    input, correct_output = create_input()
+    e.insertInput(input, correct_output)
     e.fowardPropagate()
     print(e.layers[-1].values)
+    print(e.desiredOutput)
     e.backPropagate()
+
 # Test
 '''e = networkLayer(1, 2)
 for i in range(100) :
