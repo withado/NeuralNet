@@ -122,7 +122,7 @@ def create_input(quiet = True, inputToValues = True) :
 e = neuralNetwork([8, 3])
 
 
-for i in range(32) :
+for i in range(40) :
     input, correct_output = create_input()
     e.insertInput(input, correct_output)
     e.fowardPropagate()
