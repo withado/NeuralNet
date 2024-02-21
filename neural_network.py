@@ -79,11 +79,14 @@ class neuralNetwork() :
     
 
     def backPropagate(self) :
+
+
+
         for layerIndex, layer in enumerate(reversed(self.layers)) :
             if layerIndex == 0 : 
                 # if layer is the last layer, then determine initial layer error using the derivative of the cost function :)
                 layerError = [( self.desiredOutput[index] - value ) for index, value in enumerate(self.layers[-1].values)]
-
+                
                 # defining the error for the next layer
                 layerError = layer.determine_gradients(self.layers[self.layers.index(layer) - 1].values, layerError)
                 continue
@@ -119,7 +122,7 @@ def create_input(quiet = True, inputToValues = True) :
 e = neuralNetwork([8, 3])
 
 
-for i in range(80) :
+for i in range(32) :
     input, correct_output = create_input()
     e.insertInput(input, correct_output)
     e.fowardPropagate()
