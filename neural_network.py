@@ -26,7 +26,7 @@ class networkLayer() :
             self.values[neuronIndex] += self.biases[neuronIndex]
 
 
-    def determine_gradients(self, values_previousLayer, layerError) : 
+    def determine_gradients(self, values_previousLayer, layerError, learningRate = .6) : 
         self.weightGradient = list()
         self.biasGradient = list()
         error_previousLayer = [0 for i in values_previousLayer]
@@ -47,9 +47,9 @@ class networkLayer() :
                 error_previousLayer[neuronIndex_previousLayer] += weightError
         # enact the weightsGradient array upon the weights
         for neuronIndex, weights in enumerate(self.weights) :
-            self.biases[neuronIndex] += self.biasGradient[neuronIndex] * .01
+            self.biases[neuronIndex] += self.biasGradient[neuronIndex] * learningRate
             for connectedNeuron, weight in enumerate(weights) :
-                self.weights[neuronIndex][connectedNeuron] += self.weightGradient[neuronIndex][connectedNeuron] * .01 # NOTE: ADD LEARNING RATE
+                self.weights[neuronIndex][connectedNeuron] += self.weightGradient[neuronIndex][connectedNeuron] * learningRate # NOTE: ADD LEARNING RATE
         return error_previousLayer
 
 
@@ -116,16 +116,38 @@ def create_input(quiet = True, inputToValues = True) :
 
 
 
-e = neuralNetwork([8, 4, 3])
+e = neuralNetwork([8, 3])
 
 
-for i in range(10000) :
+for i in range(80) :
     input, correct_output = create_input()
     e.insertInput(input, correct_output)
     e.fowardPropagate()
     print(e.layers[-1].values)
     print(e.desiredOutput)
     e.backPropagate()
+
+
+print("~~~~~~ TEST TIME ~~~~~~~")
+
+
+total_error = 0
+
+
+for i in range(10) :
+    error = 0
+    input, correct_output = create_input()
+    e.insertInput(input, correct_output)
+    e.fowardPropagate()
+    print(e.layers[-1].values)
+    print(e.desiredOutput)
+    for j, k in enumerate(e.layers[-1].values) : 
+        error += k - e.desiredOutput[j]
+    total_error += abs(error)
+
+print(f'Total Deviation :   {total_error}')
+print(f'Average Deviation : {total_error/30}')
+        
 
 # Test
 '''e = networkLayer(1, 2)
