@@ -92,7 +92,7 @@ class neuralNetwork() :
                 continue
 
             # as long as the layer is not the first layer, then
-            if layer != self.layers[-1] :
+            if layer != self.layers[-1] and layer != self.layers[0]:
 
                 # define error for the next layer
                 layerError = layer.determine_gradients(self.layers[self.layers.index(layer) - 1].values, layerError)
